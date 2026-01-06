@@ -1,120 +1,112 @@
-import { useState } from 'react'
-import { 
-  format, 
-  startOfMonth, 
-  endOfMonth, 
-  eachDayOfInterval, 
-  isSameMonth, 
-  isSameDay, 
-  addMonths, 
-  subMonths,
-  startOfWeek,
-  endOfWeek,
-  isToday
-} from 'date-fns'
+import { useState, useMemo } from 'react'
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, startOfWeek, endOfWeek } from 'date-fns'
 import { useTopic } from '../context/TopicContext'
 import './CalendarView.css'
 
-const CalendarView = ({ onTopicClick }) => {
+const CalendarView = ({ onDateSelect }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  const { getTopicsForDate, getDatesWithTasks } = useTopic()
-
-  const datesWithTasks = getDatesWithTasks()
-  const selectedDateTopics = getTopicsForDate(selectedDate)
-
-  const monthStart = startOfMonth(currentMonth)
-  const monthEnd = endOfMonth(currentMonth)
-  const calendarStart = startOfWeek(monthStart)
-  const calendarEnd = endOfWeek(monthEnd)
+  const { getDatesWithTasks, getTopicsForDate, serverDate } = useTopic()
   
-  const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
+  const taskDates = useMemo(() => getDatesWithTasks(), [getDatesWithTasks])
+  const today = new Date(serverDate)
 
-  const hasTasksOnDate = (date) => {
+  const days = useMemo(() => {
+    const monthStart = startOfMonth(currentMonth)
+    const monthEnd = endOfMonth(currentMonth)
+    const startDate = startOfWeek(monthStart)
+    const endDate = endOfWeek(monthEnd)
+    
+    return eachDayOfInterval({ start: startDate, end: endDate })
+  }, [currentMonth])
+
+  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+  const getDateStatus = (date) => {
     const dateStr = format(date, 'yyyy-MM-dd')
-    return datesWithTasks.has(dateStr)
+    const hasTasks = taskDates.has(dateStr)
+    const topics = hasTasks ? getTopicsForDate(date) : []
+    
+    const hasNew = topics.some(t => t.type === 'new')
+    const hasReview = topics.some(t => t.type === 'review' && !t.reviewCompleted)
+    const hasCompleted = topics.some(t => t.reviewCompleted)
+    
+    return { hasTasks, hasNew, hasReview, hasCompleted, count: topics.length }
   }
 
   return (
     <div className="calendar-view">
-      <div className="calendar-container">
-        <div className="calendar-header">
-          <button 
-            className="calendar-nav" 
-            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-          >
-            <i className="fas fa-chevron-left"></i>
-          </button>
-          <h2>{format(currentMonth, 'MMMM yyyy')}</h2>
-          <button 
-            className="calendar-nav" 
-            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-          >
-            <i className="fas fa-chevron-right"></i>
-          </button>
-        </div>
+      <div className="calendar-header">
+        <button 
+          className="month-nav" 
+          onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+          aria-label="Previous month"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
+        <h2 className="current-month">
+          {format(currentMonth, 'MMMM yyyy')}
+        </h2>
+        <button 
+          className="month-nav" 
+          onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+          aria-label="Next month"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+          </svg>
+        </button>
+      </div>
 
-        <div className="calendar-weekdays">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <span key={day}>{day}</span>
+      <div className="calendar-grid">
+        <div className="weekdays">
+          {weekDays.map(day => (
+            <div key={day} className="weekday">{day}</div>
           ))}
         </div>
-
-        <div className="calendar-grid">
-          {days.map(day => (
-            <button
-              key={day.toISOString()}
-              className={`calendar-day 
-                ${!isSameMonth(day, currentMonth) ? 'other-month' : ''} 
-                ${isToday(day) ? 'today' : ''} 
-                ${isSameDay(day, selectedDate) ? 'selected' : ''}
-                ${hasTasksOnDate(day) ? 'has-tasks' : ''}
-              `}
-              onClick={() => setSelectedDate(day)}
-            >
-              <span className="calendar-day-number">{format(day, 'd')}</span>
-            </button>
-          ))}
+        
+        <div className="days">
+          {days.map((day, index) => {
+            const status = getDateStatus(day)
+            const isCurrentMonth = isSameMonth(day, currentMonth)
+            const isToday = isSameDay(day, today)
+            
+            return (
+              <button
+                key={index}
+                className={`calendar-day ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${status.hasTasks ? 'has-tasks' : ''}`}
+                onClick={() => onDateSelect(day)}
+              >
+                <span className="day-number">{format(day, 'd')}</span>
+                {status.hasTasks && (
+                  <div className="day-indicators">
+                    {status.hasNew && <span className="indicator new"></span>}
+                    {status.hasReview && <span className="indicator review"></span>}
+                    {status.hasCompleted && <span className="indicator completed"></span>}
+                  </div>
+                )}
+                {status.count > 0 && (
+                  <span className="task-count">{status.count}</span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
-      <div className="day-details">
-        <h3>
-          <i className="fas fa-calendar-day"></i>
-          {format(selectedDate, 'EEEE, MMMM d, yyyy')}
-        </h3>
-        <div className="day-topics">
-          {selectedDateTopics.length === 0 ? (
-            <div className="empty-day">
-              <i className="fas fa-calendar-check"></i>
-              <p>No topics scheduled</p>
-            </div>
-          ) : (
-            selectedDateTopics.map((topic, idx) => (
-              <div 
-                key={`${topic.id}-${idx}`}
-                className="day-topic-item"
-                onClick={() => onTopicClick(topic.id)}
-              >
-                <div className="day-topic-info">
-                  <div className={`day-topic-type ${topic.type}`}>
-                    <i className={`fas ${topic.type === 'new' ? 'fa-plus' : 'fa-redo'}`}></i>
-                  </div>
-                  <div>
-                    <span className="day-topic-title">{topic.title}</span>
-                    <span className="day-topic-subtitle">
-                      {topic.type === 'new' ? 'New topic' : `Review Day +${topic.reviewDay}`}
-                    </span>
-                  </div>
-                </div>
-                {topic.type === 'review' && (
-                  <span className={`day-topic-badge ${topic.reviewCompleted ? 'done' : 'pending'}`}>
-                    {topic.reviewCompleted ? 'Done' : 'Pending'}
-                  </span>
-                )}
-              </div>
-            ))
-          )}
+      <div className="calendar-legend">
+        <div className="legend-item">
+          <span className="legend-dot new"></span>
+          <span>New topic</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-dot review"></span>
+          <span>Review due</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-dot completed"></span>
+          <span>Completed</span>
         </div>
       </div>
     </div>

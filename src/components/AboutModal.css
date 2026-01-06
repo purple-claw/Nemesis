@@ -1,49 +1,107 @@
-.about-content {
-  padding: var(--spacing-md);
+.about-modal {
+  max-height: 90vh;
 }
 
-.about-section {
-  margin-bottom: var(--spacing-lg);
-  padding: var(--spacing-md);
-  background: var(--bg-tertiary);
+.about-content {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.about-logo {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.about-logo .a1 { color: var(--accent-green); }
+.about-logo .a4 { color: var(--accent-yellow); }
+.about-logo .a7 { color: var(--accent-primary); }
+
+.about-content h3 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.about-desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-primary);
   border-radius: var(--radius-md);
 }
 
-.about-section h3 {
-  font-size: var(--font-md);
-  margin-bottom: var(--spacing-sm);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+.feature-icon {
+  font-size: 1.25rem;
 }
 
-.about-section h3 i {
+.feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.feature-text strong {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.feature-text span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.about-science {
+  background: var(--bg-primary);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.about-science h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
   color: var(--accent-primary);
 }
 
-.about-section p {
+.about-science p {
+  margin: 0;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  font-size: var(--font-sm);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
-.about-section ul {
-  padding-left: var(--spacing-lg);
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  margin-top: var(--spacing-sm);
+.about-footer {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
 }
 
-.about-section ul li {
-  margin-bottom: var(--spacing-xs);
-  line-height: 1.6;
+.about-footer p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
-.about-section.tip {
-  background: rgba(229, 57, 53, 0.1);
-  border: 1px solid rgba(229, 57, 53, 0.3);
-}
-
-.about-section.tip h3 i {
-  color: var(--warning);
+.about-footer p:last-child {
+  margin-top: 0.25rem;
 }

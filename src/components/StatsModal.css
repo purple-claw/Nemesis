@@ -1,81 +1,177 @@
+.stats-modal {
+  max-height: 90vh;
+}
+
+.stats-content {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.streak-section {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(229, 57, 53, 0.1), rgba(255, 107, 107, 0.1));
+  border-radius: var(--radius-lg);
+}
+
+.big-streak {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.streak-flame svg {
+  width: 48px;
+  height: 48px;
+  color: var(--accent-primary);
+  filter: drop-shadow(0 0 10px rgba(229, 57, 53, 0.5));
+  animation: flicker 1s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.streak-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.streak-count {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.streak-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.streak-best {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+  gap: 0.75rem;
 }
 
 .stat-card {
-  background: var(--bg-tertiary);
-  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  padding: 1rem;
   border-radius: var(--radius-md);
   text-align: center;
 }
 
-.stat-icon {
-  width: 44px;
-  height: 44px;
-  background: var(--accent-gradient);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto var(--spacing-sm);
-  font-size: var(--font-lg);
-}
-
-.stat-icon.warning {
-  background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
-}
-
-.stat-icon.success {
-  background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
-}
-
-.stat-icon.gold {
-  background: linear-gradient(135deg, #ffc107 0%, #ffca28 100%);
-}
-
 .stat-value {
-  font-size: var(--font-2xl);
+  display: block;
+  font-size: 1.75rem;
   font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
 }
+
+.stat-value.pending { color: var(--accent-yellow); }
+.stat-value.overdue { color: var(--accent-primary); }
+.stat-value.mastered { color: var(--accent-green); }
 
 .stat-label {
-  font-size: var(--font-xs);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.categories-section h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.category-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.category-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.bar-label {
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.bar-count {
   color: var(--text-muted);
 }
 
-.streak-card {
-  background: var(--accent-gradient);
-  padding: var(--spacing-lg);
+.bar-track {
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-yellow));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.method-info {
+  background: var(--bg-primary);
+  padding: 1rem;
   border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
 }
 
-.streak-icon {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-2xl);
+.method-info h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
 }
 
-.streak-info {
-  flex: 1;
+.method-info p {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
-.streak-value {
-  font-size: var(--font-3xl);
-  font-weight: 700;
+.method-info ul {
+  margin: 0;
+  padding: 0 0 0 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 
-.streak-label {
-  font-size: var(--font-sm);
-  opacity: 0.9;
+.method-info li {
+  margin-bottom: 0.25rem;
+}
+
+.method-info strong {
+  color: var(--text-primary);
+}
+
+.sync-info {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }

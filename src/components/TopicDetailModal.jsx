@@ -1,209 +1,186 @@
-import { useState, useRef, useEffect } from 'react'
-import { format } from 'date-fns'
+import { useState } from 'react'
 import { useTopic } from '../context/TopicContext'
 import './TopicDetailModal.css'
 
-const TopicDetailModal = ({ topicId, onClose, showToast }) => {
-  const { topics, updateTopic, deleteTopic, markReviewComplete } = useTopic()
-  const topic = topics.find(t => t.id === topicId)
-  const notesRef = useRef(null)
-  const [notes, setNotes] = useState('')
+const TopicDetailModal = ({ topic, isOpen, onClose }) => {
+  const { updateTopic, deleteTopic, markReviewComplete } = useTopic()
+  const [notes, setNotes] = useState(topic?.notes || '')
+  const [isEditing, setIsEditing] = useState(false)
+  const [showDelete, setShowDelete] = useState(false)
 
-  useEffect(() => {
-    if (topic) {
-      setNotes(topic.notes || '')
-      if (notesRef.current) {
-        notesRef.current.innerHTML = topic.notes || ''
-      }
-    }
-  }, [topic])
-
-  if (!topic) return null
+  if (!isOpen || !topic) return null
 
   const handleSaveNotes = () => {
-    const content = notesRef.current?.innerHTML || ''
-    updateTopic(topicId, { notes: content })
-    showToast('Notes saved!', 'success')
+    updateTopic(topic.id, { notes })
+    setIsEditing(false)
   }
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this topic?')) {
-      deleteTopic(topicId)
-      showToast('Topic deleted', 'success')
-      onClose()
-    }
+    deleteTopic(topic.id)
+    onClose()
   }
 
-  const handleMarkReviewed = () => {
-    if (topic.currentStage < 3) {
-      markReviewComplete(topicId)
-      showToast('Review completed! Great job!', 'success')
-    }
+  const handleMarkComplete = () => {
+    markReviewComplete(topic.id)
   }
 
-  const execCommand = (command, value = null) => {
-    document.execCommand(command, false, value)
-    notesRef.current?.focus()
+  const getNextReview = () => {
+    if (topic.completed) return null
+    const review = topic.reviews?.[topic.current_stage]
+    return review
   }
 
-  const stages = [
-    { icon: 'fa-play', label: 'Created' },
-    { icon: 'fa-redo', label: 'Day +1' },
-    { icon: 'fa-sync', label: 'Day +4' },
-    { icon: 'fa-check-double', label: 'Day +7' },
-    { icon: 'fa-trophy', label: 'Mastered' }
-  ]
+  const nextReview = getNextReview()
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content modal-large" onClick={e => e.stopPropagation()}>
+      <div className="modal-content topic-detail-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>
-            <i className="fas fa-book"></i>
-            {topic.title}
-          </h2>
-          <div className="modal-actions">
-            <button className="icon-btn danger" onClick={handleDelete} title="Delete">
-              <i className="fas fa-trash"></i>
-            </button>
-            <button className="modal-close" onClick={onClose}>
-              <i className="fas fa-times"></i>
-            </button>
+          <div className="header-info">
+            <span className="detail-category">{topic.category}</span>
+            <h2>{topic.title}</h2>
           </div>
+          <button className="close-btn" onClick={onClose}>
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
         </div>
 
-        <div className="modal-body">
-          <div className="topic-meta">
-            <span className={`topic-category-badge ${topic.category}`}>
-              {topic.category}
-            </span>
-            <span className={`topic-priority-badge ${topic.priority}`}>
-              {topic.priority} priority
-            </span>
-            <span className="topic-date-badge">
-              <i className="fas fa-calendar"></i>
-              {format(new Date(topic.createdAt), 'MMM d, yyyy')}
-            </span>
-          </div>
-
-          <div className="topic-progress">
-            <h4>Review Progress</h4>
-            <div className="progress-steps">
-              {stages.map((stage, idx) => (
-                <div 
-                  key={idx}
-                  className={`progress-step ${idx <= topic.currentStage ? 'completed' : ''} ${idx === topic.currentStage ? 'active' : ''}`}
-                >
-                  <div className="step-icon">
-                    <i className={`fas ${stage.icon}`}></i>
-                  </div>
-                  <span>{stage.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="topic-schedule">
-            <h4>
-              <i className="fas fa-calendar"></i>
-              Review Schedule
-            </h4>
-            <div className="schedule-list">
-              <div className="schedule-item completed">
-                <div className="schedule-info">
-                  <div className="schedule-icon">
-                    <i className="fas fa-plus"></i>
-                  </div>
-                  <span className="schedule-label">Created</span>
-                </div>
-                <span className="schedule-date">
-                  {format(new Date(topic.createdAt), 'MMM d, yyyy')}
-                </span>
-                <span className="schedule-status done">
-                  <i className="fas fa-check"></i>
-                </span>
-              </div>
-              {topic.reviews.map((review, idx) => (
-                <div 
-                  key={idx}
-                  className={`schedule-item ${review.completed ? 'completed' : ''}`}
-                >
-                  <div className="schedule-info">
-                    <div className="schedule-icon">
-                      <i className="fas fa-redo"></i>
+        <div className="detail-content">
+          <div className="detail-section">
+            <h3>Progress</h3>
+            <div className="progress-track">
+              {[
+                { day: 1, label: 'Day 1' },
+                { day: 4, label: 'Day 4' },
+                { day: 7, label: 'Day 7' }
+              ].map((stage, idx) => {
+                const review = topic.reviews?.[idx]
+                const isComplete = review?.completed
+                const isCurrent = idx === topic.current_stage && !topic.completed
+                
+                return (
+                  <div 
+                    key={stage.day} 
+                    className={`progress-step ${isComplete ? 'complete' : ''} ${isCurrent ? 'current' : ''}`}
+                  >
+                    <div className="step-circle">
+                      {isComplete ? (
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                      ) : (
+                        <span>{stage.day}</span>
+                      )}
                     </div>
-                    <span className="schedule-label">Day +{review.day}</span>
+                    <span className="step-label">{stage.label}</span>
+                    {review && (
+                      <span className="step-date">
+                        {new Date(review.scheduled_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
+                    )}
                   </div>
-                  <span className="schedule-date">
-                    {format(new Date(review.date), 'MMM d, yyyy')}
-                  </span>
-                  <span className={`schedule-status ${review.completed ? 'done' : 'pending'}`}>
-                    {review.completed ? <i className="fas fa-check"></i> : <i className="fas fa-clock"></i>}
-                  </span>
+                )
+              })}
+            </div>
+            {topic.completed && (
+              <div className="mastered-banner">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>Topic Mastered!</span>
+              </div>
+            )}
+          </div>
+
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Notes</h3>
+              {!isEditing && (
+                <button className="edit-btn" onClick={() => setIsEditing(true)}>
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                  </svg>
+                </button>
+              )}
+            </div>
+            {isEditing ? (
+              <div className="notes-editor">
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Add notes, key points, or links..."
+                  rows={6}
+                />
+                <div className="editor-actions">
+                  <button className="cancel-btn" onClick={() => {
+                    setNotes(topic.notes || '')
+                    setIsEditing(false)
+                  }}>
+                    Cancel
+                  </button>
+                  <button className="save-btn" onClick={handleSaveNotes}>
+                    Save
+                  </button>
                 </div>
-              ))}
+              </div>
+            ) : (
+              <div className="notes-content">
+                {topic.notes ? (
+                  <p>{topic.notes}</p>
+                ) : (
+                  <p className="no-notes">No notes yet. Tap edit to add some!</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="detail-section meta-section">
+            <div className="meta-item">
+              <span className="meta-label">Created</span>
+              <span className="meta-value">
+                {new Date(topic.created_at).toLocaleDateString('en-US', { 
+                  weekday: 'short', 
+                  month: 'short', 
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </span>
+            </div>
+            <div className="meta-item">
+              <span className="meta-label">Priority</span>
+              <span className={`meta-value priority-${topic.priority}`}>
+                {topic.priority}
+              </span>
             </div>
           </div>
 
-          <div className="topic-notes">
-            <div className="notes-header">
-              <h4>
-                <i className="fas fa-file-alt"></i>
-                Notes & Content
-              </h4>
-              <button className="btn-small" onClick={handleSaveNotes}>
-                <i className="fas fa-save"></i>
-                Save
+          <div className="detail-actions">
+            {nextReview && !topic.completed && (
+              <button className="action-btn complete-action" onClick={handleMarkComplete}>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                Mark Review Complete
               </button>
-            </div>
-            <div className="notes-toolbar">
-              <button type="button" className="toolbar-btn" onClick={() => execCommand('bold')} title="Bold">
-                <i className="fas fa-bold"></i>
+            )}
+            
+            {!showDelete ? (
+              <button className="action-btn delete-action" onClick={() => setShowDelete(true)}>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                </svg>
+                Delete Topic
               </button>
-              <button type="button" className="toolbar-btn" onClick={() => execCommand('italic')} title="Italic">
-                <i className="fas fa-italic"></i>
-              </button>
-              <button type="button" className="toolbar-btn" onClick={() => execCommand('underline')} title="Underline">
-                <i className="fas fa-underline"></i>
-              </button>
-              <span className="toolbar-divider"></span>
-              <button type="button" className="toolbar-btn" onClick={() => execCommand('insertUnorderedList')} title="Bullet List">
-                <i className="fas fa-list-ul"></i>
-              </button>
-              <button type="button" className="toolbar-btn" onClick={() => execCommand('insertOrderedList')} title="Numbered List">
-                <i className="fas fa-list-ol"></i>
-              </button>
-              <span className="toolbar-divider"></span>
-              <button type="button" className="toolbar-btn" onClick={() => execCommand('formatBlock', 'h3')} title="Heading">
-                <i className="fas fa-heading"></i>
-              </button>
-              <button type="button" className="toolbar-btn" onClick={() => execCommand('formatBlock', 'blockquote')} title="Quote">
-                <i className="fas fa-quote-right"></i>
-              </button>
-            </div>
-            <div 
-              ref={notesRef}
-              className="notes-editor"
-              contentEditable
-              placeholder="Write your notes here..."
-              suppressContentEditableWarning
-            />
+            ) : (
+              <div className="delete-confirm">
+                <span>Are you sure?</span>
+                <button className="confirm-delete" onClick={handleDelete}>Yes, Delete</button>
+                <button className="cancel-delete" onClick={() => setShowDelete(false)}>Cancel</button>
+              </div>
+            )}
           </div>
-        </div>
-
-        <div className="modal-footer">
-          {!topic.completed && topic.currentStage < 3 && (
-            <button className="btn-primary" onClick={handleMarkReviewed}>
-              <i className="fas fa-check"></i>
-              Mark as Reviewed
-            </button>
-          )}
-          {topic.completed && (
-            <div className="mastered-badge">
-              <i className="fas fa-trophy"></i>
-              Topic Mastered!
-            </div>
-          )}
         </div>
       </div>
     </div>

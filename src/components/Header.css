@@ -1,53 +1,107 @@
 .header {
-  background: var(--bg-secondary);
-  padding: var(--spacing-md);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid var(--bg-tertiary);
 }
 
-.header-left,
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.app-title {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: var(--font-lg);
-  font-weight: 700;
-}
-
-.app-title i {
-  color: var(--accent-primary);
-}
-
-.icon-btn {
-  width: 40px;
-  height: 40px;
-  background: transparent;
+.header-btn {
+  background: none;
   border: none;
   color: var(--text-primary);
-  border-radius: var(--radius-full);
   cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition-fast);
 }
 
-.icon-btn:hover {
+.header-btn:active {
+  transform: scale(0.95);
   background: var(--bg-tertiary);
 }
 
-.icon-btn.danger:hover {
-  background: rgba(244, 67, 54, 0.2);
-  color: var(--danger);
+.header-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.logo-num {
+  padding: 0.1rem 0.3rem;
+  border-radius: var(--radius-sm);
+}
+
+.logo-num.n1 {
+  color: var(--accent-green);
+}
+
+.logo-num.n4 {
+  color: var(--accent-yellow);
+}
+
+.logo-num.n7 {
+  color: var(--accent-primary);
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-date {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.offline-badge {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  background: var(--accent-yellow);
+  color: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: linear-gradient(135deg, var(--accent-primary), #ff6b6b);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.streak-badge svg {
+  width: 18px;
+  height: 18px;
+  color: #fff;
+}
+
+.streak-badge span {
+  color: #fff;
 }

@@ -1,40 +1,73 @@
-.nav-tabs {
+.navigation {
+  display: flex;
   background: var(--bg-secondary);
-  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.navigation::-webkit-scrollbar {
   display: none;
-  gap: var(--spacing-sm);
-  border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  position: relative;
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  transition: var(--transition-fast);
+}
+
+.nav-item span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.nav-item.active {
+  color: var(--accent-primary);
+}
+
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: var(--accent-primary);
+  border-radius: 3px 3px 0 0;
+}
+
+.nav-item:active {
+  transform: scale(0.95);
 }
 
 @media (min-width: 768px) {
-  .nav-tabs {
-    display: flex;
+  .nav-item {
+    flex-direction: row;
+    gap: 0.5rem;
   }
-}
-
-.nav-tab {
-  flex: 1;
-  background: transparent;
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  font-size: var(--font-sm);
-  font-weight: 500;
-  transition: all var(--transition-fast);
-}
-
-.nav-tab:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-}
-
-.nav-tab.active {
-  background: var(--accent-gradient);
-  color: var(--text-primary);
+  
+  .nav-item span {
+    font-size: 0.875rem;
+  }
 }
