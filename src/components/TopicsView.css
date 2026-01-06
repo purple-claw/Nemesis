@@ -1,0 +1,113 @@
+.topics-view {
+  padding: var(--spacing-md);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.topics-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.topic-list-item {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.topic-list-item:hover {
+  background: var(--bg-tertiary);
+  transform: translateX(4px);
+}
+
+.topic-list-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-gradient);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-lg);
+  flex-shrink: 0;
+}
+
+.topic-list-icon.programming { background: linear-gradient(135deg, #2196f3 0%, #42a5f5 100%); }
+.topic-list-icon.math { background: linear-gradient(135deg, #ff5722 0%, #ff7043 100%); }
+.topic-list-icon.science { background: linear-gradient(135deg, #00bcd4 0%, #26c6da 100%); }
+.topic-list-icon.language { background: linear-gradient(135deg, #8bc34a 0%, #9ccc65 100%); }
+.topic-list-icon.history { background: linear-gradient(135deg, #795548 0%, #8d6e63 100%); }
+.topic-list-icon.other { background: linear-gradient(135deg, #607d8b 0%, #78909c 100%); }
+
+.topic-list-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.topic-list-title {
+  font-weight: 500;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topic-list-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+.topic-stage {
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.topic-stage.mastered {
+  background: rgba(76, 175, 80, 0.2);
+  color: var(--success);
+}
+
+.topic-date {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.topic-list-arrow {
+  color: var(--text-muted);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--text-muted);
+}
+
+.empty-state i {
+  font-size: 64px;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.3;
+  color: var(--accent-primary);
+}
+
+.empty-state h3 {
+  font-size: var(--font-lg);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  font-size: var(--font-sm);
+}

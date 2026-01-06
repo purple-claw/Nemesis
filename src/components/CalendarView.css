@@ -1,0 +1,219 @@
+.calendar-view {
+  padding: var(--spacing-md);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.calendar-container {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.calendar-header h2 {
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.calendar-nav {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-tertiary);
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.calendar-nav:hover {
+  background: var(--accent-primary);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.calendar-weekdays span {
+  text-align: center;
+  font-size: var(--font-xs);
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: var(--spacing-sm);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  background: var(--bg-tertiary);
+  border: none;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  min-height: 45px;
+  color: var(--text-primary);
+}
+
+.calendar-day:hover {
+  background: var(--bg-card);
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+}
+
+.calendar-day.today {
+  border: 2px solid var(--accent-primary);
+}
+
+.calendar-day.selected {
+  background: var(--accent-gradient);
+}
+
+.calendar-day.has-tasks::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 6px;
+  height: 6px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+}
+
+.calendar-day.selected.has-tasks::after {
+  background: var(--text-primary);
+}
+
+.calendar-day-number {
+  font-size: var(--font-sm);
+  font-weight: 500;
+}
+
+/* Day Details */
+.day-details {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+}
+
+.day-details h3 {
+  font-size: var(--font-md);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.day-details h3 i {
+  color: var(--accent-primary);
+}
+
+.day-topics {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.empty-day {
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--text-muted);
+}
+
+.empty-day i {
+  font-size: 32px;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.5;
+}
+
+.day-topic-item {
+  background: var(--bg-tertiary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.day-topic-item:hover {
+  background: var(--bg-card);
+}
+
+.day-topic-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.day-topic-type {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-sm);
+}
+
+.day-topic-type.new {
+  background: rgba(229, 57, 53, 0.2);
+  color: var(--accent-primary);
+}
+
+.day-topic-type.review {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+}
+
+.day-topic-title {
+  font-weight: 500;
+  display: block;
+}
+
+.day-topic-subtitle {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+.day-topic-badge {
+  font-size: var(--font-xs);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.day-topic-badge.done {
+  background: rgba(76, 175, 80, 0.2);
+  color: var(--success);
+}
+
+.day-topic-badge.pending {
+  background: rgba(255, 152, 0, 0.2);
+  color: var(--warning);
+}

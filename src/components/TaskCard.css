@@ -1,0 +1,94 @@
+.task-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-left: 3px solid var(--accent-primary);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.task-card:active {
+  transform: scale(0.98);
+}
+
+.task-card.priority-high {
+  border-left-color: var(--priority-high);
+}
+
+.task-card.priority-medium {
+  border-left-color: var(--priority-medium);
+}
+
+.task-card.priority-low {
+  border-left-color: var(--priority-low);
+}
+
+.task-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+}
+
+.task-title {
+  font-weight: 500;
+  font-size: var(--font-md);
+  flex: 1;
+  margin-right: var(--spacing-sm);
+}
+
+.task-category {
+  font-size: var(--font-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.task-category.general { background: rgba(156, 39, 176, 0.2); color: #ce93d8; }
+.task-category.programming { background: rgba(33, 150, 243, 0.2); color: #90caf9; }
+.task-category.math { background: rgba(255, 87, 34, 0.2); color: #ffab91; }
+.task-category.science { background: rgba(0, 188, 212, 0.2); color: #80deea; }
+.task-category.language { background: rgba(139, 195, 74, 0.2); color: #c5e1a5; }
+.task-category.history { background: rgba(121, 85, 72, 0.2); color: #bcaaa4; }
+.task-category.other { background: rgba(96, 125, 139, 0.2); color: #b0bec5; }
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+.task-date {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.task-progress {
+  display: flex;
+  gap: 3px;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+}
+
+.progress-dot.completed {
+  background: var(--accent-primary);
+}
+
+.progress-dot.completed.day1 { background: #ff9800; }
+.progress-dot.completed.day4 { background: #2196f3; }
+.progress-dot.completed.day7 { background: #9c27b0; }
